@@ -9,10 +9,13 @@ const standingEntrySchema = new mongoose.Schema({
 
 const tablaSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
-  icon: { type: String, default: '' },
+  icon: { type: String, default: '', required: true },
   entries: [standingEntrySchema],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
+}, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 });
 
 // Update the updatedAt timestamp before saving
