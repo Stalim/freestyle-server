@@ -5,7 +5,7 @@ const Tabla = require('../models/Tabla');
 // Get all tablas
 router.get('/', async (req, res) => {
   try {
-    const tablas = await Tabla.find();
+    const tablas = await Tabla.find().select('name icon entries createdAt updatedAt');
     res.json(tablas);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
 // Get a specific tabla by name
 router.get('/:name', async (req, res) => {
   try {
-    const tabla = await Tabla.findOne({ name: req.params.name });
+    const tabla = await Tabla.findOne({ name: req.params.name }).select('name icon entries createdAt updatedAt');
     if (!tabla) {
       return res.status(404).json({ message: 'Tabla not found' });
     }
@@ -56,7 +56,7 @@ router.post('/', async (req, res) => {
         updatedAt: new Date()
       },
       { new: true, upsert: true }
-    );
+    ).select('name icon entries createdAt updatedAt');
 
     res.status(201).json(result);
   } catch (error) {
