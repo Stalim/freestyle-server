@@ -6,7 +6,18 @@ const Tabla = require('../models/Tabla');
 router.get('/', async (req, res) => {
   try {
     const tablas = await Tabla.find().select('name icon entries createdAt updatedAt');
-    res.json(tablas);
+    // Transform the entries to include bg field
+    const transformedTablas = tablas.map(tabla => ({
+      ...tabla.toObject(),
+      entries: tabla.entries.map(entry => ({
+        position: entry.position,
+        name: entry.name,
+        matches: entry.matches,
+        points: entry.points,
+        bg: entry.bg || 0 // Include bg field with default 0 if not present
+      }))
+    }));
+    res.json(transformedTablas);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -19,7 +30,18 @@ router.get('/:name', async (req, res) => {
     if (!tabla) {
       return res.status(404).json({ message: 'Tabla not found' });
     }
-    res.json(tabla);
+    // Transform the entries to include bg field
+    const transformedTabla = {
+      ...tabla.toObject(),
+      entries: tabla.entries.map(entry => ({
+        position: entry.position,
+        name: entry.name,
+        matches: entry.matches,
+        points: entry.points,
+        bg: entry.bg || 0 // Include bg field with default 0 if not present
+      }))
+    };
+    res.json(transformedTabla);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -36,9 +58,9 @@ router.post('/', async (req, res) => {
 
     // Validate entries format
     for (const entry of entries) {
-      if (!entry.position || !entry.name || !entry.matches || !entry.points) {
+      if (!entry.position || !entry.name || !entry.matches || !entry.points || !entry.bg) {
         return res.status(400).json({ 
-          message: 'Each entry must have position, name, matches, and points' 
+          message: 'Each entry must have position, name, matches, points, and bg (batallas ganadas)' 
         });
       }
     }
@@ -72,6 +94,30 @@ router.delete('/:name', async (req, res) => {
       return res.status(404).json({ message: 'Tabla not found' });
     }
     res.json({ message: 'Tabla deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Update all existing entries with BG field
+router.patch('/update-bg', async (req, res) => {
+  try {
+    const tablas = await Tabla.find();
+    
+    for (const tabla of tablas) {
+      // Update each entry to include BG field if it doesn't exist
+      tabla.entries = tabla.entries.map(entry => ({
+        ...entry,
+        bg: entry.bg || 0
+      }));
+      
+      await tabla.save();
+    }
+    
+    res.json({ 
+      message: 'Successfully updated all league entries with BG field',
+      updatedCount: tablas.length
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
