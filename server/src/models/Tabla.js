@@ -4,7 +4,8 @@ const standingEntrySchema = new mongoose.Schema({
   position: { type: Number, required: true },
   name: { type: String, required: true },
   matches: { type: Number, required: true },
-  points: { type: Number, required: true }
+  points: { type: Number, required: true },
+  bg: { type: Number, required: true, default: 0 } // Batallas Ganadas
 });
 
 const tablaSchema = new mongoose.Schema({
