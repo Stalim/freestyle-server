@@ -71,6 +71,9 @@ struct LeaguesView: View {
                             }
                             .padding(.horizontal)
                         }
+                        .refreshable {
+                            await viewModel.fetchLeagues()
+                        }
                     }
                 }
             }
@@ -80,7 +83,9 @@ struct LeaguesView: View {
         }
         .onAppear {
             if viewModel.leagues.isEmpty {
-                viewModel.fetchLeagues()
+                Task {
+                    await viewModel.fetchLeagues()
+                }
             }
         }
     }
