@@ -26,7 +26,12 @@ class LeagueViewModel: ObservableObject {
         isLoading = true
         print("Fetching from: \(urlString)")
         
-        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+        // Create a URLRequest with cache policy set to reloadIgnoringLocalCacheData
+        var request = URLRequest(url: url)
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+        request.addValue("no-cache", forHTTPHeaderField: "Cache-Control")
+        
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             guard let self = self else { return }
             
             if let error = error {
