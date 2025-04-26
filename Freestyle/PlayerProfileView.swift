@@ -121,10 +121,10 @@ struct PlayerProfileView: View {
                                 
                                 VStack(spacing: 8) {
                                     StatRow(title: "Posición", value: "\(entry.position)")
-                                    StatRow(title: "Batallas", value: "\(entry.matches)")
+                                    StatRow(title: "Batallas", value: "\(entry.battlesDisputed)")
                                     StatRow(title: "Puntos", value: "\(entry.points)")
-                                    StatRow(title: "Batallas Ganadas", value: "\(entry.battlesWon)")
-                                    StatRow(title: "Batallas Perdidas", value: "\(entry.battlesLost)")
+                                    StatRow(title: "Batallas Ganadas", value: "\(entry.wonBattles)")
+                                    StatRow(title: "Batallas Perdidas", value: "\(entry.lostBattles)")
                                 }
                                 .padding()
                                 .background(Color.gray.opacity(0.2))
@@ -196,9 +196,9 @@ struct PlayerProfileView: View {
                         // Current League Stats
                         VStack(spacing: 15) {
                             StatRow(title: "Current Position", value: "\(entry.position)")
-                            StatRow(title: "Matches Played", value: "\(entry.matches)")
-                            StatRow(title: "Battles Won", value: "\(entry.battlesWon)")
-                            StatRow(title: "Battles Lost", value: "\(entry.battlesLost)")
+                            StatRow(title: "Matches Played", value: "\(entry.battlesDisputed)")
+                            StatRow(title: "Battles Won", value: "\(entry.wonBattles)")
+                            StatRow(title: "Battles Lost", value: "\(entry.lostBattles)")
                             StatRow(title: "Current Points", value: "\(entry.points)")
                         }
                         .padding()
@@ -268,10 +268,10 @@ class MockPlayerProfileViewModel: PlayerProfileViewModel {
                 id: "preview",
                 position: 1,
                 name: "Example Player",
-                matches: 8,
+                battlesDisputed: 8,
                 points: 24,
-                bg: 6,
-                bd: 2
+                wonBattles: 6,
+                lostBattles: 2
             ),
             leagueName: "FMS Argentina"
         )

@@ -20,6 +20,6 @@ struct Event: Codable, Identifiable {
     }
     
     var image: String {
-        "https://ifree-production.up.railway.app\(imageUrl)"
+        "https://web-production-2277.up.railway.app\(imageUrl)"
     }
 } 

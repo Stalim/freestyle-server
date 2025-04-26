@@ -26,28 +26,32 @@ struct Entry: Codable, Identifiable {
     let id: String
     let position: Int
     let name: String
-    let matches: Int
+    let battlesDisputed: Int
     let points: Int
-    let bg: Int?
-    let bd: Int?
+    let wonBattles: Int
+    let lostBattles: Int
     
     enum CodingKeys: String, CodingKey {
         case id = "_id"
         case position
         case name
-        case matches
+        case battlesDisputed
         case points
-        case bg
-        case bd
+        case wonBattles
+        case lostBattles
     }
     
-    // Add computed properties for bg and bd with default values
+    // Add computed properties for compatibility
+    var matches: Int {
+        return battlesDisputed
+    }
+    
     var battlesWon: Int {
-        return bg ?? 0
+        return wonBattles
     }
     
     var battlesLost: Int {
-        return bd ?? 0
+        return lostBattles
     }
 }
 

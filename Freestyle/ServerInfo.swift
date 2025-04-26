@@ -3,7 +3,7 @@ import Foundation
 /// Documentation for the Freestyle API server
 enum ServerInfo {
     /// Base URL for the API server
-    static let baseURL = "https://ifree-production.up.railway.app"
+    static let baseURL = "https://web-production-2277.up.railway.app"
     
     /// Available API endpoints
     enum Endpoints {

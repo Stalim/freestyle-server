@@ -6,7 +6,7 @@ class EventViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var error: String?
     
-    let apiURL = "https://ifree-production.up.railway.app/api/events"
+    let apiURL = "https://web-production-2277.up.railway.app/api/events"
     
     func fetchEvents() {
         isLoading = true

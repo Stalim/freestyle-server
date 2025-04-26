@@ -96,10 +96,6 @@ struct LeagueDetailView: View {
                         
                         Spacer()
                         
-                        Text("BD")
-                            .font(.caption)
-                            .frame(width: 50, alignment: .trailing)
-                        
                         Text("BG")
                             .font(.caption)
                             .frame(width: 50, alignment: .trailing)
@@ -133,15 +129,15 @@ struct LeagueDetailView: View {
                                 
                                 Spacer()
                                 
-                                Text("\(entry.matches)")
+                                Text("\(entry.battlesDisputed)")
                                     .font(.headline)
                                     .frame(width: 50, alignment: .trailing)
                                 
-                                Text("\(entry.battlesWon)")
+                                Text("\(entry.wonBattles)")
                                     .font(.headline)
                                     .frame(width: 50, alignment: .trailing)
                                 
-                                Text("\(entry.battlesLost)")
+                                Text("\(entry.lostBattles)")
                                     .font(.headline)
                                     .frame(width: 50, alignment: .trailing)
                                 
@@ -172,16 +168,16 @@ struct LeagueDetailView: View {
             id: "fms_argentina",
             name: "fms_argentina",
             entries: [
-                Entry(id: "1", position: 1, name: "Mecha", matches: 10, points: 25, bg: 7, bd: 3),
-                Entry(id: "2", position: 2, name: "Larrix", matches: 10, points: 22, bg: 7, bd: 3),
-                Entry(id: "3", position: 3, name: "Dybbuk", matches: 10, points: 19, bg: 6, bd: 4),
-                Entry(id: "4", position: 4, name: "Teorema", matches: 10, points: 19, bg: 6, bd: 4),
-                Entry(id: "5", position: 5, name: "Klan", matches: 10, points: 18, bg: 6, bd: 4),
-                Entry(id: "6", position: 6, name: "Stuart", matches: 10, points: 18, bg: 6, bd: 4),
-                Entry(id: "7", position: 7, name: "Jesse Pungaz", matches: 10, points: 16, bg: 5, bd: 5),
-                Entry(id: "8", position: 8, name: "CTZ", matches: 10, points: 8, bg: 3, bd: 7),
-                Entry(id: "9", position: 9, name: "Nasir Catriel", matches: 10, points: 6, bg: 2, bd: 8),
-                Entry(id: "10", position: 10, name: "Barto", matches: 10, points: 0, bg: 0, bd: 10)
+                Entry(id: "1", position: 1, name: "Mecha", battlesDisputed: 10, points: 25, wonBattles: 7, lostBattles: 3),
+                Entry(id: "2", position: 2, name: "Larrix", battlesDisputed: 10, points: 22, wonBattles: 7, lostBattles: 3),
+                Entry(id: "3", position: 3, name: "Dybbuk", battlesDisputed: 10, points: 19, wonBattles: 6, lostBattles: 4),
+                Entry(id: "4", position: 4, name: "Teorema", battlesDisputed: 10, points: 19, wonBattles: 6, lostBattles: 4),
+                Entry(id: "5", position: 5, name: "Klan", battlesDisputed: 10, points: 18, wonBattles: 6, lostBattles: 4),
+                Entry(id: "6", position: 6, name: "Stuart", battlesDisputed: 10, points: 18, wonBattles: 6, lostBattles: 4),
+                Entry(id: "7", position: 7, name: "Jesse Pungaz", battlesDisputed: 10, points: 16, wonBattles: 5, lostBattles: 5),
+                Entry(id: "8", position: 8, name: "CTZ", battlesDisputed: 10, points: 8, wonBattles: 3, lostBattles: 7),
+                Entry(id: "9", position: 9, name: "Nasir Catriel", battlesDisputed: 10, points: 6, wonBattles: 2, lostBattles: 8),
+                Entry(id: "10", position: 10, name: "Barto", battlesDisputed: 10, points: 0, wonBattles: 0, lostBattles: 10)
             ],
             icon: "fms_argentina",
             createdAt: "",

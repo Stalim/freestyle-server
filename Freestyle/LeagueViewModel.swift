@@ -124,24 +124,24 @@ class LeagueViewModel: ObservableObject {
         for entryData in entries {
             guard let position = entryData["position"] as? Int,
                   let name = entryData["name"] as? String,
-                  let matches = entryData["matches"] as? Int,
                   let points = entryData["points"] as? Int else {
                 print("Invalid entry data format: \(entryData)")
                 continue
             }
             
-            let bg = entryData["bg"] as? Int ?? 0
-            let bd = entryData["bd"] as? Int ?? 0
             let id = entryData["_id"] as? String ?? name
+            let battlesDisputed = entryData["matches"] as? Int ?? 0
+            let wonBattles = entryData["bg"] as? Int ?? 0
+            let lostBattles = entryData["bp"] as? Int ?? 0
             
             let entry = Entry(
                 id: id,
                 position: position,
                 name: name,
-                matches: matches,
+                battlesDisputed: battlesDisputed,
                 points: points,
-                bg: bg,
-                bd: bd
+                wonBattles: wonBattles,
+                lostBattles: lostBattles
             )
             processedEntries.append(entry)
             print("Added entry: \(name) at position \(position)")
