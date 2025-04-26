@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LeagueDetailView: View {
     let league: League
+    @StateObject private var viewModel = LeagueViewModel()
     
     // Add computed property for random BG numbers
     private func getRandomBG(for entry: Entry) -> Int {
@@ -78,76 +79,113 @@ struct LeagueDetailView: View {
             .background(Color.black)
             
             // Table Section
-            List {
-                // Header Row
-                HStack(alignment: .center) {
-                    Text("POS")
-                        .font(.caption)
-                        .frame(width: 30, alignment: .leading)
-                    
-                    Text("MC")
-                        .font(.caption)
-                    
-                    Spacer()
-                    
-                    Text("BD")
-                        .font(.caption)
-                        .frame(width: 50, alignment: .trailing)
-                    
-                    Text("BG")
-                        .font(.caption)
-                        .frame(width: 50, alignment: .trailing)
-                    
-                    Text("PTS")
-                        .font(.caption)
-                        .frame(width: 50, alignment: .trailing)
-                }
-                .padding(.vertical, 4)
-                .listRowBackground(Color.clear)
-                .foregroundColor(.white)
-                
-                ForEach(league.entries.sorted(by: { $0.position < $1.position })) { entry in
-                    ZStack {
-                        NavigationLink(destination: PlayerProfileView(entry: entry, leagueName: league.name)) {
-                            EmptyView()
-                        }
-                        .opacity(0)
+            if viewModel.isLoading {
+                ProgressView()
+                    .tint(.white)
+                    .padding()
+            } else {
+                List {
+                    // Header Row
+                    HStack(alignment: .center) {
+                        Text("POS")
+                            .font(.caption)
+                            .frame(width: 30, alignment: .leading)
                         
-                        HStack {
-                            Text("\(entry.position)")
-                                .font(.headline)
-                                .frame(width: 30, alignment: .leading)
-                            
-                            Text(entry.name)
-                                .font(.body)
-                            
-                            Spacer()
-                            
-                            Text("\(entry.matches)")
-                                .font(.headline)
-                                .frame(width: 50, alignment: .trailing)
-                            
-                            Text("\(entry.battlesLost)")
-                                .font(.headline)
-                                .frame(width: 50, alignment: .trailing)
-                            
-                            Text("\(entry.battlesWon)")
-                                .font(.headline)
-                                .frame(width: 50, alignment: .trailing)
-                            
-                            Text("\(entry.points)")
-                                .font(.headline)
-                                .frame(width: 50, alignment: .trailing)
-                        }
-                        .padding(.vertical, 4)
+                        Text("MC")
+                            .font(.caption)
+                        
+                        Spacer()
+                        
+                        Text("BD")
+                            .font(.caption)
+                            .frame(width: 50, alignment: .trailing)
+                        
+                        Text("BG")
+                            .font(.caption)
+                            .frame(width: 50, alignment: .trailing)
+                        
+                        Text("BP")
+                            .font(.caption)
+                            .frame(width: 50, alignment: .trailing)
+                        
+                        Text("PTS")
+                            .font(.caption)
+                            .frame(width: 50, alignment: .trailing)
                     }
+                    .padding(.vertical, 4)
                     .listRowBackground(Color.clear)
                     .foregroundColor(.white)
+                    
+                    ForEach(viewModel.leagues.first?.entries.sorted(by: { $0.position < $1.position }) ?? []) { entry in
+                        ZStack {
+                            NavigationLink(destination: PlayerProfileView(entry: entry, leagueName: league.name)) {
+                                EmptyView()
+                            }
+                            .opacity(0)
+                            
+                            HStack {
+                                Text("\(entry.position)")
+                                    .font(.headline)
+                                    .frame(width: 30, alignment: .leading)
+                                
+                                Text(entry.name)
+                                    .font(.body)
+                                
+                                Spacer()
+                                
+                                Text("\(entry.matches)")
+                                    .font(.headline)
+                                    .frame(width: 50, alignment: .trailing)
+                                
+                                Text("\(entry.battlesWon)")
+                                    .font(.headline)
+                                    .frame(width: 50, alignment: .trailing)
+                                
+                                Text("\(entry.battlesLost)")
+                                    .font(.headline)
+                                    .frame(width: 50, alignment: .trailing)
+                                
+                                Text("\(entry.points)")
+                                    .font(.headline)
+                                    .frame(width: 50, alignment: .trailing)
+                            }
+                            .padding(.vertical, 4)
+                        }
+                        .listRowBackground(Color.clear)
+                        .foregroundColor(.white)
+                    }
                 }
+                .listStyle(PlainListStyle())
+                .background(Color.black)
             }
-            .listStyle(PlainListStyle())
-            .background(Color.black)
         }
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            viewModel.fetchSingleLeague(name: league.name)
+        }
+    }
+}
+
+#Preview {
+    NavigationView {
+        LeagueDetailView(league: League(
+            id: "fms_argentina",
+            name: "fms_argentina",
+            entries: [
+                Entry(id: "1", position: 1, name: "Mecha", matches: 10, points: 25, bg: 7, bd: 3),
+                Entry(id: "2", position: 2, name: "Larrix", matches: 10, points: 22, bg: 7, bd: 3),
+                Entry(id: "3", position: 3, name: "Dybbuk", matches: 10, points: 19, bg: 6, bd: 4),
+                Entry(id: "4", position: 4, name: "Teorema", matches: 10, points: 19, bg: 6, bd: 4),
+                Entry(id: "5", position: 5, name: "Klan", matches: 10, points: 18, bg: 6, bd: 4),
+                Entry(id: "6", position: 6, name: "Stuart", matches: 10, points: 18, bg: 6, bd: 4),
+                Entry(id: "7", position: 7, name: "Jesse Pungaz", matches: 10, points: 16, bg: 5, bd: 5),
+                Entry(id: "8", position: 8, name: "CTZ", matches: 10, points: 8, bg: 3, bd: 7),
+                Entry(id: "9", position: 9, name: "Nasir Catriel", matches: 10, points: 6, bg: 2, bd: 8),
+                Entry(id: "10", position: 10, name: "Barto", matches: 10, points: 0, bg: 0, bd: 10)
+            ],
+            icon: "fms_argentina",
+            createdAt: "",
+            updatedAt: ""
+        ))
     }
 } 
