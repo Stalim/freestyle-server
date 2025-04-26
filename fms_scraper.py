@@ -68,10 +68,15 @@ class FMSScraper:
             for row in table.find_all('tr')[1:]:  # Skip header row
                 columns = row.find_all('td')
                 if len(columns) >= 9:
+                    # Clean up name by removing everything after asterisk
+                    name = columns[1].text.strip()
+                    if '*' in name:
+                        name = name.split('*')[0].strip()
+                    
                     # Extract text and handle empty values
                     stats = MCStats(
                         position=position,  # Use the counter for position
-                        name=columns[1].text.strip(),
+                        name=name,
                         points=self.safe_int_convert(columns[2].text),
                         victories=self.safe_int_convert(columns[3].text),
                         referee_victories=self.safe_int_convert(columns[4].text),
