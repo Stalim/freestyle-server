@@ -96,6 +96,10 @@ struct LeagueDetailView: View {
                         
                         Spacer()
                         
+                        Text("BT")
+                            .font(.caption)
+                            .frame(width: 50, alignment: .trailing)
+                        
                         Text("BG")
                             .font(.caption)
                             .frame(width: 50, alignment: .trailing)
