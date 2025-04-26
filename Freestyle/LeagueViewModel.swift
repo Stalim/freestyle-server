@@ -83,10 +83,15 @@ class LeagueViewModel: ObservableObject {
                 } else {
                     // For all leagues endpoint
                     if let leaguesArray = try? JSONDecoder().decode([League].self, from: data) {
+                        // Filter out duplicates by name
+                        let uniqueLeagues = Array(Set(leaguesArray.map { $0.name }))
+                            .compactMap { name in
+                                leaguesArray.first { $0.name == name }
+                            }
                         DispatchQueue.main.async {
-                            self.leagues = leaguesArray
+                            self.leagues = uniqueLeagues
                             self.isLoading = false
-                            print("Successfully processed \(leaguesArray.count) leagues from array")
+                            print("Successfully processed \(uniqueLeagues.count) unique leagues from array")
                         }
                         return
                     }
@@ -94,8 +99,15 @@ class LeagueViewModel: ObservableObject {
                     // Fallback to manual parsing for all leagues
                     if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
                         var processedLeagues: [League] = []
+                        var seenNames = Set<String>()
                         
                         for (leagueName, entriesData) in json {
+                            // Skip if we've already seen this league name
+                            if seenNames.contains(leagueName) {
+                                continue
+                            }
+                            seenNames.insert(leagueName)
+                            
                             guard let entriesArray = entriesData as? [[String: Any]] else {
                                 print("Invalid entries format for league: \(leagueName)")
                                 continue
@@ -109,7 +121,7 @@ class LeagueViewModel: ObservableObject {
                         DispatchQueue.main.async {
                             self.leagues = processedLeagues
                             self.isLoading = false
-                            print("Successfully processed \(processedLeagues.count) leagues")
+                            print("Successfully processed \(processedLeagues.count) unique leagues")
                         }
                     }
                 }

@@ -94,43 +94,24 @@ class FMSScraper:
             raise Exception(f"Error fetching league data for {self.country}: {str(e)}")
 
     def transform_to_railway_format(self, mc_stats: List[MCStats]) -> dict:
-        """
-        Transform FMS data into Railway endpoint format.
-        
-        Args:
-            mc_stats: List of MCStats objects from get_league_data()
-            
-        Returns:
-            dict: Data in Railway endpoint format
-        """
+        """Transform MCStats to Railway format."""
         entries = []
-        for stats in mc_stats:
-            # Calculate total matches and battles won/lost
-            total_matches = (stats.victories + stats.referee_victories + 
-                           stats.defeats + stats.referee_defeats)
-            battles_won = stats.victories + stats.referee_victories
-            battles_lost = stats.defeats + stats.referee_defeats
-            
+        for stat in mc_stats:
             entry = {
-                "position": stats.position,
-                "name": stats.name,
-                "matches": total_matches,  # BT: Total battles
-                "points": stats.points,
-                "bg": battles_won,      # Total battles won (victories + referee victories)
-                "bp": battles_lost      # Total battles lost (defeats + referee defeats)
+                "position": stat.position,
+                "name": stat.name,
+                "matches": stat.victories + stat.referee_victories + stat.referee_defeats + stat.defeats,
+                "points": stat.points,
+                "bg": stat.victories + stat.referee_victories,
+                "bp": stat.defeats + stat.referee_defeats
             }
             entries.append(entry)
         
-        # Handle special cases for country names
-        country_mapping = {
-            'spain': 'espana',
-            'mexico': 'mexico',
-            'peru': 'peru'
-        }
-        country_name = country_mapping.get(self.country, self.country)
+        # Use "FMS World Series" as the name for fmsws
+        league_name = "FMS World Series" if self.country == "fmsws" else f"fms_{self.country}"
         
         return {
-            "name": f"fms_{country_name}",
+            "name": league_name,
             "entries": entries
         }
 

@@ -30,6 +30,8 @@ struct LeagueDetailView: View {
             return "fms_colombia"
         case "fms_mexico":
             return "fms_mexico"
+        case "FMS World Series":
+            return "fmsws"
         default:
             return league.displayIcon
         }
@@ -53,6 +55,8 @@ struct LeagueDetailView: View {
             return "FMS COLOMBIA"
         case "fms_mexico":
             return "FMS MÉXICO"
+        case "fms_world_series":
+            return "FMS WORLD SERIES"
         default:
             return league.name.replacingOccurrences(of: "_", with: " ").uppercased()
         }

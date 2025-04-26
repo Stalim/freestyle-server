@@ -127,8 +127,10 @@ struct LeagueRowView: View {
             return "FMS Colombia"
         case "fms_mexico":
             return "FMS México"
+        case "fms_world_series":
+            return "FMS World Series"
         default:
-            return league.name
+            return league.name.replacingOccurrences(of: "_", with: " ").capitalized
         }
     }
     
@@ -178,6 +180,12 @@ struct LeagueRowView: View {
                     .cornerRadius(8)
             } else if league.name == "fms_mexico" {
                 Image("fms_mexico")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 40, height: 40)
+                    .cornerRadius(8)
+            } else if league.name == "FMS World Series" {
+                Image("fmsws")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 40, height: 40)
