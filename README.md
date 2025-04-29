@@ -3,17 +3,17 @@
 ## Project Structure
 ```
 /
-├── server/               # Backend server code
-│   ├── src/             # Source files
-│   ├── uploads/         # Uploaded files storage
-│   └── package.json     # Server dependencies
-├── Freestyle/           # iOS app code
-└── README.md           # This file
+├── freestyle-server/    # Backend server code
+│   ├── src/            # Source files
+│   ├── uploads/        # Uploaded files storage
+│   └── package.json    # Server dependencies
+├── Freestyle/          # iOS app code
+└── README.md          # This file
 ```
 
 ## Base URL
 ```
-https://ifree-production.up.railway.app
+https://web-production-2277.up.railway.app
 ```
 
 ## Quick Start 🚀

@@ -20,6 +20,15 @@ struct Event: Codable, Identifiable {
     }
     
     var image: String {
-        "https://web-production-2277.up.railway.app\(imageUrl)"
+        // Check if imageUrl is a complete URL
+        if imageUrl.hasPrefix("http") {
+            return imageUrl
+        }
+        
+        // Check if imageUrl starts with a slash
+        let path = imageUrl.hasPrefix("/") ? imageUrl : "/\(imageUrl)"
+        
+        // Construct the full URL
+        return "https://web-production-2277.up.railway.app\(path)"
     }
 } 

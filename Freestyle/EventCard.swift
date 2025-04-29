@@ -15,17 +15,33 @@ struct EventCard: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // Image
-            AsyncImage(url: URL(string: event.image)) { image in
+            // Image with better error handling
+            AsyncImage(url: URL(string: event.image)) { phase in
+                switch phase {
+                case .empty:
+                    ProgressView()
+                        .frame(height: 200)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.gray.opacity(0.3))
+                case .success(let image):
                 image
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
-            } placeholder: {
-                Rectangle()
-                    .foregroundColor(.gray.opacity(0.3))
-            }
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 200)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.black.opacity(0.1))
+                case .failure:
+                    Image(systemName: "photo")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
             .frame(height: 200)
-            .clipped()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.gray.opacity(0.3))
+                        .foregroundColor(.gray)
+                @unknown default:
+                    EmptyView()
+                }
+            }
             
             // Content
             VStack(alignment: .leading, spacing: 8) {
