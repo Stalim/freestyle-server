@@ -87,6 +87,29 @@ app.get('/health', async (req, res) => {
   }
 });
 
+// Add route to list all registered routes
+app.get('/routes', (req, res) => {
+  const routes = [];
+  app._router.stack.forEach(middleware => {
+    if (middleware.route) {
+      routes.push({
+        path: middleware.route.path,
+        methods: Object.keys(middleware.route.methods)
+      });
+    } else if (middleware.name === 'router') {
+      middleware.handle.stack.forEach(handler => {
+        if (handler.route) {
+          routes.push({
+            path: handler.route.path,
+            methods: Object.keys(handler.route.methods)
+          });
+        }
+      });
+    }
+  });
+  res.json(routes);
+});
+
 // Validate and parse PORT
 const validatePort = (port) => {
   const parsedPort = parseInt(port, 10);
