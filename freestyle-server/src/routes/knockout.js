@@ -63,7 +63,7 @@ router.delete('/:leagueId', async (req, res) => {
     if (!knockout) {
       return res.status(404).json({ message: 'Knockout stage not found for this league' });
     }
-    res.json({ message: 'Knockout stage deleted successfully', deletedTournament: knockout });
+    res.json({ message: 'Knockout stage deleted successfully' });
   } catch (error) {
     console.error('Error deleting knockout stage:', error);
     res.status(500).json({ message: 'Error deleting knockout stage', error: error.message });
