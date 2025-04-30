@@ -58,14 +58,21 @@ router.get('/:leagueId', async (req, res) => {
 
 // DELETE knockout stage for a specific league
 router.delete('/:leagueId', async (req, res) => {
+  console.log('DELETE request received for leagueId:', req.params.leagueId);
   try {
+    console.log('Attempting to find and delete tournament...');
     const knockout = await Knockout.findOneAndDelete({ leagueId: req.params.leagueId });
+    console.log('Result from findOneAndDelete:', knockout);
+    
     if (!knockout) {
+      console.log('No tournament found with leagueId:', req.params.leagueId);
       return res.status(404).json({ message: 'Knockout stage not found for this league' });
     }
-    res.json({ message: 'Knockout stage deleted successfully' });
+    
+    console.log('Tournament successfully deleted:', knockout._id);
+    res.json({ message: 'Knockout stage deleted successfully', deletedTournament: knockout });
   } catch (error) {
-    console.error('Error deleting knockout stage:', error);
+    console.error('Error in DELETE route:', error);
     res.status(500).json({ message: 'Error deleting knockout stage', error: error.message });
   }
 });
