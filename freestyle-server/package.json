@@ -9,10 +9,13 @@
     "test": "jest",
     "lint": "eslint .",
     "seed:players": "node src/seed/playerSeed.js",
-    "seed": "node src/seed/seedScript.js"
+    "seed": "node src/seed/seedScript.js",
+    "postinstall": "npm run build",
+    "build": "echo 'No build step required'"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": "18.19.1",
+    "npm": "10.2.4"
   },
   "keywords": [],
   "author": "",
