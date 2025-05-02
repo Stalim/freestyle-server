@@ -1,23 +1,29 @@
 const mongoose = require('mongoose');
 
-const playerStatsSchema = new mongoose.Schema({
-  wins: { type: Number, default: 0 },
-  losses: { type: Number, default: 0 },
-  draws: { type: Number, default: 0 },
-  winRate: { type: Number, default: 0 }
-});
-
 const playerSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
   name: { type: String, required: true },
-  imageUrl: { type: String, required: true },
-  bannerUrl: { type: String, required: true },
-  age: { type: Number, required: true },
-  nationality: { type: String, required: true },
-  rapStyle: { type: String, required: true },
-  stats: { type: playerStatsSchema, required: true },
-  achievements: [{ type: String }],
-  description: { type: String, required: true }
+  birthPlace: { type: String, required: true },
+  birthDate: { type: String, required: true },
+  biography: { type: String, required: true },
+  statistics: {
+    seasons: { type: String, required: true },
+    victories: { type: String, required: true },
+    defeats: { type: String, required: true },
+    trophies: { type: String, required: true }
+  },
+  leagues: [{ type: String }],
+  images: {
+    profile: { type: String, required: true },
+    logo: { type: String, required: true }
+  },
+  socialMedia: {
+    twitter: { type: String, default: '' },
+    facebook: { type: String, default: '' },
+    instagram: { type: String, default: '' },
+    tiktok: { type: String, default: '' }
+  },
+  famousQuotes: [{ type: String }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Player', playerSchema); 
