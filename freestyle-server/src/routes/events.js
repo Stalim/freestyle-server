@@ -34,7 +34,11 @@ router.put('/:id', async (req, res) => {
       date: new Date(req.body.date),
       description: req.body.description,
       location: req.body.location,
-      time: req.body.time
+      time: req.body.time,
+      hosts: req.body.hosts || [],
+      djs: req.body.djs || [],
+      jury: req.body.jury || [],
+      participants: req.body.participants || []
     };
 
     const updatedEvent = await Event.findByIdAndUpdate(
@@ -61,7 +65,11 @@ router.post('/', async (req, res) => {
       date: new Date(req.body.date),
       description: req.body.description,
       location: req.body.location,
-      time: req.body.time
+      time: req.body.time,
+      hosts: req.body.hosts || [],
+      djs: req.body.djs || [],
+      jury: req.body.jury || [],
+      participants: req.body.participants || []
     });
 
     const newEvent = await event.save();
