@@ -12,6 +12,12 @@ const playerSchema = new mongoose.Schema({
     defeats: { type: String, required: true },
     trophies: { type: String, required: true }
   },
+  redbullStatistics: {
+    battles: { type: String, default: '0' },
+    victories: { type: String, default: '0' },
+    defeats: { type: String, default: '0' },
+    trophies: { type: String, default: '0' }
+  },
   leagues: [{ type: String }],
   images: {
     profile: { type: String, required: true },
