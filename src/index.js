@@ -13,6 +13,11 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// Root path handler for Railway healthcheck
+app.get('/', (req, res) => {
+  res.redirect('/health');
+});
+
 // Create uploads directory
 const fs = require('fs');
 const uploadsDir = path.join(__dirname, '../uploads');
