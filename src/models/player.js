@@ -4,7 +4,7 @@ const playerSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   birthPlace: { type: String, required: true },
-  birthDate: { type: String, required: true },
+  age: { type: Number, required: true },
   biography: { type: String, required: true },
   statistics: {
     seasons: { type: String, required: true },

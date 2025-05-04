@@ -128,6 +128,11 @@ router.post('/', upload.fields([
   try {
     const playerData = JSON.parse(req.body.playerData || '{}');
     
+    // Validate age
+    if (playerData.age && (typeof playerData.age !== 'number' || playerData.age < 0 || playerData.age > 150)) {
+      return res.status(400).json({ message: 'Age must be a valid number between 0 and 150' });
+    }
+    
     // Add image URLs if files were uploaded
     if (req.files) {
       if (req.files.profileImage && req.files.profileImage[0]) {
@@ -156,6 +161,11 @@ router.put('/:id', upload.fields([
   try {
     const playerData = JSON.parse(req.body.playerData || '{}');
     
+    // Validate age if provided
+    if (playerData.age && (typeof playerData.age !== 'number' || playerData.age < 0 || playerData.age > 150)) {
+      return res.status(400).json({ message: 'Age must be a valid number between 0 and 150' });
+    }
+    
     // Add image URLs if files were uploaded
     if (req.files) {
       if (req.files.profileImage && req.files.profileImage[0]) {
@@ -170,6 +180,47 @@ router.put('/:id', upload.fields([
     const updatedPlayer = await Player.findOneAndUpdate(
       { id: req.params.id },
       playerData,
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedPlayer) {
+      return res.status(404).json({ message: 'Player not found' });
+    }
+    
+    res.json(updatedPlayer);
+  } catch (error) {
+    console.error('Error updating player:', error);
+    res.status(400).json({ message: 'Error updating player', error: error.message });
+  }
+});
+
+// PATCH (partial update) a player
+router.patch('/:id', upload.fields([
+  { name: 'profileImage', maxCount: 1 },
+  { name: 'bannerImage', maxCount: 1 }
+]), handleMulterError, async (req, res) => {
+  try {
+    const playerData = JSON.parse(req.body.playerData || '{}');
+    
+    // Validate age if provided
+    if (playerData.age && (typeof playerData.age !== 'number' || playerData.age < 0 || playerData.age > 150)) {
+      return res.status(400).json({ message: 'Age must be a valid number between 0 and 150' });
+    }
+    
+    // Add image URLs if files were uploaded
+    if (req.files) {
+      if (req.files.profileImage && req.files.profileImage[0]) {
+        playerData.imageUrl = `/uploads/${req.files.profileImage[0].filename}`;
+      }
+      
+      if (req.files.bannerImage && req.files.bannerImage[0]) {
+        playerData.bannerUrl = `/uploads/${req.files.bannerImage[0].filename}`;
+      }
+    }
+    
+    const updatedPlayer = await Player.findOneAndUpdate(
+      { id: req.params.id },
+      { $set: playerData },
       { new: true, runValidators: true }
     );
     
