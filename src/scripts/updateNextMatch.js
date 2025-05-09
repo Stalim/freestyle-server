@@ -20,16 +20,18 @@ async function updateNextMatch() {
         // First update the next match
         const updateResponse = await axios.patch(`${API_URL}/gazir`, {
             playerData: JSON.stringify({
-                $set: {
-                    nextMatch: {
-                        id: 'gazir',
-                        opponent: 'chuty',
-                        date: '2024-05-15T20:00:00Z',
-                        league: 'FMS España',
-                        round: 'Semifinales'
-                    }
+                nextMatch: {
+                    id: 'gazir',
+                    opponent: 'chuty',
+                    date: '2024-05-15T20:00:00Z',
+                    league: 'FMS España',
+                    round: 'Semifinales'
                 }
             })
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
         
         console.log('Successfully updated next match:', updateResponse.data);
