@@ -200,7 +200,11 @@ router.patch('/:id', upload.fields([
   { name: 'bannerImage', maxCount: 1 }
 ]), handleMulterError, async (req, res) => {
   try {
+    console.log('Received PATCH request for player:', req.params.id);
+    console.log('Request body:', req.body);
+    
     const playerData = JSON.parse(req.body.playerData || '{}');
+    console.log('Parsed player data:', playerData);
     
     // Validate age if provided
     if (playerData.age && (typeof playerData.age !== 'number' || playerData.age < 0 || playerData.age > 150)) {
@@ -218,6 +222,7 @@ router.patch('/:id', upload.fields([
       }
     }
     
+    // Update the player with the new data
     const updatedPlayer = await Player.findOneAndUpdate(
       { id: req.params.id },
       { $set: playerData },
@@ -228,6 +233,7 @@ router.patch('/:id', upload.fields([
       return res.status(404).json({ message: 'Player not found' });
     }
     
+    console.log('Updated player:', updatedPlayer);
     res.json(updatedPlayer);
   } catch (error) {
     console.error('Error updating player:', error);
