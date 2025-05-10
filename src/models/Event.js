@@ -12,18 +12,28 @@ const participantSchema = new mongoose.Schema({
   }
 });
 
+const translationSchema = new mongoose.Schema({
+  en: {
+    type: String,
+    required: true
+  },
+  es: {
+    type: String,
+    required: true
+  }
+});
+
 const eventSchema = new mongoose.Schema({
   title: {
-    type: String,
-    required: true,
-    trim: true
+    type: translationSchema,
+    required: true
   },
   date: {
     type: Date,
     required: true
   },
   description: {
-    type: String,
+    type: translationSchema,
     required: true
   },
   location: {

@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
 
+const translationSchema = new mongoose.Schema({
+    en: { type: String, required: true },
+    es: { type: String, required: true }
+});
+
 const nextMatchSchema = new mongoose.Schema({
     id: String,
     opponent: String,
@@ -13,7 +18,7 @@ const playerSchema = new mongoose.Schema({
     name: { type: String, required: true },
     birthPlace: { type: String, required: true },
     age: { type: Number, required: true },
-    biography: { type: String, required: true },
+    biography: { type: translationSchema, required: true },
     statistics: {
         seasons: { type: String, required: true },
         victories: { type: String, required: true },
@@ -21,10 +26,10 @@ const playerSchema = new mongoose.Schema({
         trophies: { type: String, required: true }
     },
     redbullStatistics: {
-        battles: { type: String, default: '0' },
-        victories: { type: String, default: '0' },
-        defeats: { type: String, default: '0' },
-        trophies: { type: String, default: '0' }
+        battles: { type: String, required: true },
+        victories: { type: String, required: true },
+        defeats: { type: String, required: true },
+        trophies: { type: String, required: true }
     },
     leagues: [{ type: String }],
     images: {
@@ -37,8 +42,16 @@ const playerSchema = new mongoose.Schema({
         instagram: { type: String, default: '' },
         tiktok: { type: String, default: '' }
     },
-    famousQuotes: [{ type: String }],
-    nextMatch: { type: nextMatchSchema }
+    famousQuotes: [{ type: translationSchema }],
+    nextMatch: {
+        id: { type: String },
+        opponent: { type: String },
+        date: { type: String },
+        league: { type: String },
+        round: { type: String }
+    }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Player', playerSchema); 
+const Player = mongoose.model('Player', playerSchema);
+
+module.exports = Player; 

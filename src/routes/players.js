@@ -54,15 +54,34 @@ const handleMulterError = (err, req, res, next) => {
   next();
 };
 
+// Helper function to transform player data based on language
+const transformPlayerData = (player, lang = 'es') => {
+    const transformed = player.toObject();
+    
+    // Transform biography
+    if (transformed.biography) {
+        transformed.biography = transformed.biography[lang] || transformed.biography.es;
+    }
+    
+    // Transform famous quotes
+    if (transformed.famousQuotes) {
+        transformed.famousQuotes = transformed.famousQuotes.map(quote => quote[lang] || quote.es);
+    }
+    
+    return transformed;
+};
+
 // GET all players
 router.get('/', async (req, res) => {
-  try {
-    const players = await Player.find();
-    res.json(players);
-  } catch (error) {
-    console.error('Error fetching players:', error);
-    res.status(500).json({ message: 'Error fetching players', error: error.message });
-  }
+    try {
+        const lang = req.query.lang || 'es';
+        const players = await Player.find();
+        const transformedPlayers = players.map(player => transformPlayerData(player, lang));
+        res.json(transformedPlayers);
+    } catch (error) {
+        console.error('Error fetching players:', error);
+        res.status(500).json({ message: 'Error fetching players', error: error.message });
+    }
 });
 
 // Debug route to check if a player exists
@@ -105,52 +124,70 @@ router.get('/debug/:id', async (req, res) => {
 
 // GET a specific player by ID
 router.get('/:id', async (req, res) => {
-  try {
-    console.log('Fetching player with ID:', req.params.id);
-    const player = await Player.findOne({ id: req.params.id });
-    if (!player) {
-      console.log('Player not found with ID:', req.params.id);
-      return res.status(404).json({ message: 'Player not found' });
+    try {
+        const lang = req.query.lang || 'es';
+        console.log('Fetching player with ID:', req.params.id);
+        const player = await Player.findOne({ id: req.params.id });
+        if (!player) {
+            console.log('Player not found with ID:', req.params.id);
+            return res.status(404).json({ message: 'Player not found' });
+        }
+        console.log('Player found:', player.name);
+        const transformedPlayer = transformPlayerData(player, lang);
+        res.json(transformedPlayer);
+    } catch (error) {
+        console.error('Error fetching player:', error);
+        res.status(500).json({ message: 'Error fetching player', error: error.message });
     }
-    console.log('Player found:', player.name);
-    res.json(player);
-  } catch (error) {
-    console.error('Error fetching player:', error);
-    res.status(500).json({ message: 'Error fetching player', error: error.message });
-  }
 });
 
 // POST a new player with file uploads
 router.post('/', upload.fields([
-  { name: 'profileImage', maxCount: 1 },
-  { name: 'bannerImage', maxCount: 1 }
+    { name: 'profileImage', maxCount: 1 },
+    { name: 'bannerImage', maxCount: 1 }
 ]), handleMulterError, async (req, res) => {
-  try {
-    const playerData = JSON.parse(req.body.playerData || '{}');
-    
-    // Validate age
-    if (playerData.age && (typeof playerData.age !== 'number' || playerData.age < 0 || playerData.age > 150)) {
-      return res.status(400).json({ message: 'Age must be a valid number between 0 and 150' });
+    try {
+        const playerData = JSON.parse(req.body.playerData || '{}');
+        
+        // Validate age
+        if (playerData.age && (typeof playerData.age !== 'number' || playerData.age < 0 || playerData.age > 150)) {
+            return res.status(400).json({ message: 'Age must be a valid number between 0 and 150' });
+        }
+        
+        // Ensure biography has both languages
+        if (!playerData.biography || !playerData.biography.en || !playerData.biography.es) {
+            return res.status(400).json({ message: 'Biography must include both English and Spanish translations' });
+        }
+        
+        // Ensure famous quotes have both languages
+        if (playerData.famousQuotes) {
+            for (const quote of playerData.famousQuotes) {
+                if (!quote.en || !quote.es) {
+                    return res.status(400).json({ message: 'All famous quotes must include both English and Spanish translations' });
+                }
+            }
+        }
+        
+        // Add image URLs if files were uploaded
+        if (req.files) {
+            if (req.files.profileImage && req.files.profileImage[0]) {
+                playerData.images = playerData.images || {};
+                playerData.images.profile = `/uploads/${req.files.profileImage[0].filename}`;
+            }
+            
+            if (req.files.bannerImage && req.files.bannerImage[0]) {
+                playerData.images = playerData.images || {};
+                playerData.images.logo = `/uploads/${req.files.bannerImage[0].filename}`;
+            }
+        }
+        
+        const newPlayer = new Player(playerData);
+        const savedPlayer = await newPlayer.save();
+        res.status(201).json(savedPlayer);
+    } catch (error) {
+        console.error('Error creating player:', error);
+        res.status(400).json({ message: 'Error creating player', error: error.message });
     }
-    
-    // Add image URLs if files were uploaded
-    if (req.files) {
-      if (req.files.profileImage && req.files.profileImage[0]) {
-        playerData.imageUrl = `/uploads/${req.files.profileImage[0].filename}`;
-      }
-      
-      if (req.files.bannerImage && req.files.bannerImage[0]) {
-        playerData.bannerUrl = `/uploads/${req.files.bannerImage[0].filename}`;
-      }
-    }
-    
-    const newPlayer = new Player(playerData);
-    const savedPlayer = await newPlayer.save();
-    res.status(201).json(savedPlayer);
-  } catch (error) {
-    console.error('Error creating player:', error);
-    res.status(400).json({ message: 'Error creating player', error: error.message });
-  }
 });
 
 // PUT (update) a player with file uploads
