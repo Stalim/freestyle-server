@@ -18,6 +18,10 @@ const eventSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  titleTranslations: {
+    en: { type: String, trim: true },
+    es: { type: String, trim: true }
+  },
   date: {
     type: Date,
     required: true
@@ -25,6 +29,10 @@ const eventSchema = new mongoose.Schema({
   description: {
     type: String,
     required: true
+  },
+  descriptionTranslations: {
+    en: { type: String },
+    es: { type: String }
   },
   location: {
     type: String,

@@ -5,8 +5,47 @@ const Event = require('../models/Event');
 // Get all events
 router.get('/', async (req, res) => {
   try {
+    const lang = req.query.lang || 'es'; // Default to Spanish if no language specified
     const events = await Event.find().sort({ date: 1 });
-    res.json(events);
+    
+    // Transform events to include translations
+    const translatedEvents = events.map(event => {
+      const eventObj = event.toObject();
+      // Safely handle missing translation fields
+      eventObj.titleTranslations = eventObj.titleTranslations || {};
+      eventObj.descriptionTranslations = eventObj.descriptionTranslations || {};
+      
+      // Set the title and description based on the requested language, fallback to original if missing
+      const titleTranslation = eventObj.titleTranslations[lang];
+      const descriptionTranslation = eventObj.descriptionTranslations[lang];
+      
+      // Add warning if translation is missing
+      if (!titleTranslation) {
+        console.warn(`Missing ${lang} translation for event title: ${eventObj.title}`);
+      }
+      if (!descriptionTranslation) {
+        console.warn(`Missing ${lang} translation for event description: ${eventObj.description}`);
+      }
+      
+      eventObj.title = titleTranslation || eventObj.title || '';
+      eventObj.description = descriptionTranslation || eventObj.description || '';
+      
+      // Add translation status to response
+      eventObj.translationStatus = {
+        title: {
+          hasTranslation: !!titleTranslation,
+          language: lang
+        },
+        description: {
+          hasTranslation: !!descriptionTranslation,
+          language: lang
+        }
+      };
+      
+      return eventObj;
+    });
+    
+    res.json(translatedEvents);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -15,9 +54,42 @@ router.get('/', async (req, res) => {
 // Get event by ID
 router.get('/:id', async (req, res) => {
   try {
+    const lang = req.query.lang || 'es'; // Default to Spanish if no language specified
     const event = await Event.findById(req.params.id);
     if (event) {
-      res.json(event);
+      const eventObj = event.toObject();
+      // Safely handle missing translation fields
+      eventObj.titleTranslations = eventObj.titleTranslations || {};
+      eventObj.descriptionTranslations = eventObj.descriptionTranslations || {};
+      
+      // Set the title and description based on the requested language, fallback to original if missing
+      const titleTranslation = eventObj.titleTranslations[lang];
+      const descriptionTranslation = eventObj.descriptionTranslations[lang];
+      
+      // Add warning if translation is missing
+      if (!titleTranslation) {
+        console.warn(`Missing ${lang} translation for event title: ${eventObj.title}`);
+      }
+      if (!descriptionTranslation) {
+        console.warn(`Missing ${lang} translation for event description: ${eventObj.description}`);
+      }
+      
+      eventObj.title = titleTranslation || eventObj.title || '';
+      eventObj.description = descriptionTranslation || eventObj.description || '';
+      
+      // Add translation status to response
+      eventObj.translationStatus = {
+        title: {
+          hasTranslation: !!titleTranslation,
+          language: lang
+        },
+        description: {
+          hasTranslation: !!descriptionTranslation,
+          language: lang
+        }
+      };
+      
+      res.json(eventObj);
     } else {
       res.status(404).json({ message: 'Event not found' });
     }
@@ -31,8 +103,10 @@ router.put('/:id', async (req, res) => {
   try {
     const eventUpdate = {
       title: req.body.title,
+      titleTranslations: req.body.titleTranslations,
       date: new Date(req.body.date),
       description: req.body.description,
+      descriptionTranslations: req.body.descriptionTranslations,
       location: req.body.location,
       time: req.body.time,
       hosts: req.body.hosts || [],
@@ -62,8 +136,10 @@ router.post('/', async (req, res) => {
   try {
     const event = new Event({
       title: req.body.title,
+      titleTranslations: req.body.titleTranslations,
       date: new Date(req.body.date),
       description: req.body.description,
+      descriptionTranslations: req.body.descriptionTranslations,
       location: req.body.location,
       time: req.body.time,
       hosts: req.body.hosts || [],
